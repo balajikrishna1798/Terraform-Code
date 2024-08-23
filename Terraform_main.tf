@@ -101,11 +101,6 @@ resource "aws_instance" "jenkins" {
   }
 }
 
-# Output Jenkins Public IP
-output "jenkins_public_ip" {
-  value = aws_instance.jenkins.public_ip
-}
-
 # Security Group for RDS
 resource "aws_security_group" "rds_sg" {
   vpc_id = aws_vpc.main_vpc.id
@@ -136,6 +131,7 @@ resource "aws_db_instance" "postgres" {
   password               = var.db_password
   db_subnet_group_name   = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  publicly_accessible    = true 
 
   skip_final_snapshot    = true
 
@@ -144,7 +140,3 @@ resource "aws_db_instance" "postgres" {
   }
 }
 
-# Output RDS Endpoint
-output "rds_endpoint" {
-  value = aws_db_instance.postgres.endpoint
-}
